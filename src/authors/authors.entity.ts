@@ -8,4 +8,10 @@ export class Authors extends AbstractEntity {
 
   @Column()
   birthday: Date;
+
+  @Column()
+  image: string;
+
+  @Column()
+  description: string;
 }
