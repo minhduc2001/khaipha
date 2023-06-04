@@ -1,6 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
-import { StringToArray } from '@base/decorators/common.decorator';
+import {
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
+import { StringToArray, ToNumbers } from '@base/decorators/common.decorator';
+import { Transform } from 'class-transformer';
 
 export class ListDto {
   @ApiProperty({ required: false })
@@ -37,4 +44,20 @@ export class ListDto {
   @ApiProperty({ required: false })
   @IsOptional()
   path: string;
+}
+
+export class ParamIdDto {
+  @ApiProperty()
+  @Transform(({ value }) => value && +value)
+  @IsNotEmpty()
+  @IsPositive()
+  id: number;
+}
+
+export class BulkIdsDto {
+  @ApiProperty()
+  @ToNumbers()
+  @IsNotEmpty()
+  @IsPositive({ each: true })
+  ids: number[];
 }
