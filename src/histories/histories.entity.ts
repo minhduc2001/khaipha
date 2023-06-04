@@ -19,6 +19,9 @@ export class Histories extends AbstractEntity {
   @JoinColumn()
   music: Music;
 
-  @Column()
-  peek: number;
+  @Column({ nullable: true })
+  position: number;
+
+  @Column({ nullable: true })
+  duration: number;
 }

@@ -43,7 +43,7 @@ export class ListDto {
 
   @ApiProperty({ required: false })
   @IsOptional()
-  path: string;
+  path?: string;
 }
 
 export class ParamIdDto {
