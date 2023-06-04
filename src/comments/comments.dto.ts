@@ -7,7 +7,7 @@ export class AddCommentDto {
   @IsNotEmpty()
   musicId: number;
 
-  @ApiProperty()
+  @ApiHideProperty()
   @IsNumber()
   @IsNotEmpty()
   userId: number;

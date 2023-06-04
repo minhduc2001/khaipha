@@ -12,6 +12,8 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/auth/guard/jwt-auth.guard';
 import { CommentService } from './comments.service';
 import { AddCommentDto, UpdateCommentDto } from './comments.dto';
+import { GetUser } from '@/auth/decorator/get-user.decorator';
+import { User } from '@/user/entities/user.entity';
 
 @Controller('comments')
 @ApiTags('Comments')
@@ -21,8 +23,8 @@ export class CommentsController {
   constructor(private readonly service: CommentService) {}
 
   @Post()
-  async add(@Body() dto: AddCommentDto) {
-    return this.service.addComment(dto);
+  async add(@Body() dto: AddCommentDto, @GetUser() user: User) {
+    return this.service.addComment({ ...dto, userId: user.id });
   }
 
   @Put(':id')
