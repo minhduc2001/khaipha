@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   database:
-    container_name: database
+    container_name: db-khaipha
     image: postgres:13.6-alpine
     restart: always
     environment:

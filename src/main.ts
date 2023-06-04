@@ -6,7 +6,6 @@ import {
 import * as express from 'express';
 import * as bodyParser from 'body-parser';
 import * as morgan from 'morgan';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { ResponseTransformInterceptor } from '@base/middleware/response.interceptor';
 import { ValidationError } from '@base/api/exception.reslover';
