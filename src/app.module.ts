@@ -14,6 +14,10 @@ import { RoleModule } from '@/role/role.module';
 
 // SHARED
 import { SeedersModule } from '@shared/seeder/seeder.module';
+import { MusicModule } from './music/music.module';
+import { HistoriesModule } from './histories/histories.module';
+import { CommentsModule } from './comments/comments.module';
+import { AuthorsModule } from './authors/authors.module';
 
 const appModule = [AuthModule, UserModule, RoleModule, MailerModule];
 const baseModule = [LoggerModule];
@@ -24,6 +28,10 @@ const baseModule = [LoggerModule];
     ...appModule,
     TypeOrmModule.forRoot(dbConfig),
     SeedersModule,
+    MusicModule,
+    HistoriesModule,
+    CommentsModule,
+    AuthorsModule,
   ],
   controllers: [],
   providers: [],
