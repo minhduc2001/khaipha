@@ -15,11 +15,20 @@ export class Music extends AbstractEntity {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ nullable: true })
   genre: string;
 
   @Column({ nullable: true })
-  releaseDate: Date;
+  releaseDate: number;
+
+  @Column({ nullable: true })
+  artist: string;
+
+  @Column({ nullable: true })
+  duration: number;
+
+  @Column({ nullable: true })
+  album: string;
 
   @Column({ nullable: true })
   url: string;

@@ -10,7 +10,7 @@ const permissionGroup = [1];
 const data = [
   {
     username: 'admin',
-    email: 'admin@admin.com',
+    phone: '0768368218',
     password: '$2b$10$VU9fAWrF61xLIUkJKf5vBuBCh4RzdCFNekqLppKhk01/WwTx3BBFK',
     state: EState.Active,
   },

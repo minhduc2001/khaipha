@@ -7,7 +7,8 @@ import * as exc from '@base/api/exception.reslover';
 import { MusicService } from '@/music/music.service';
 import { Comments } from './comments.entity';
 import { UserService } from '@/user/user.service';
-import { AddCommentDto, UpdateCommentDto } from './comments.dto';
+import { AddCommentDto, CommentsDto, UpdateCommentDto } from './comments.dto';
+import { PaginateConfig } from '@base/service/paginate/paginate';
 
 @Injectable()
 export class CommentService extends BaseService<Comments> {
@@ -20,6 +21,15 @@ export class CommentService extends BaseService<Comments> {
     super(repository);
   }
 
+  async list(query: CommentsDto) {
+    const config: PaginateConfig<Comments> = {
+      sortableColumns: ['createdAt'],
+      relations: ['user'],
+      select: ['user.(avatar)'],
+    };
+    return this.listWithPage(query, config);
+  }
+
   async getCommentById(commentId: number) {
     return await this.repository.findOne({
       where: { id: commentId },
@@ -29,11 +39,13 @@ export class CommentService extends BaseService<Comments> {
   async addComment(dto: AddCommentDto) {
     const user = await this.userService.getUserById(dto.userId);
     const music = await this.musicService.getMusic(dto.musicId);
-    return this.repository.save({
+    await this.repository.save({
       user: user,
       music: music,
       content: dto.content,
+      star: dto.star,
     });
+    return true;
   }
 
   async updateComment(dto: UpdateCommentDto) {
@@ -47,7 +59,7 @@ export class CommentService extends BaseService<Comments> {
   }
 
   async removeComment(commentIds: number[]) {
-    for (let id in commentIds) {
+    for (const id in commentIds) {
       await this.repository.delete(id);
     }
 

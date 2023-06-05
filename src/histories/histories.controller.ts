@@ -32,21 +32,11 @@ export class HistoriesController {
     return this.service.listHistory(query);
   }
 
-  @Post()
-  async add(@Body() dto: AddHistoriesDto, @GetUser() user: User) {
-    return this.service.addHistories({ ...dto, user });
-  }
-
-  @Put(':id')
-  async update(
-    @Param() param: ParamIdDto,
-    @Body() dto: UpdateHistoriesDto,
-    @GetUser() user: User,
-  ) {
+  @Put()
+  async update(@Body() dto: UpdateHistoriesDto, @GetUser() user: User) {
     return this.service.updateHistories({
-      ...param,
       ...dto,
-      userId: user.id,
+      user: user,
     });
   }
 }

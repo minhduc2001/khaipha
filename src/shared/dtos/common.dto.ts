@@ -6,18 +6,24 @@ import {
   IsPositive,
   IsString,
 } from 'class-validator';
-import { StringToArray, ToNumbers } from '@base/decorators/common.decorator';
+import {
+  StringToArray,
+  ToNumber,
+  ToNumbers,
+} from '@base/decorators/common.decorator';
 import { Transform } from 'class-transformer';
 
 export class ListDto {
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
+  @ToNumber()
   page?: number;
 
   @ApiProperty({ required: false })
   @IsOptional()
-  @IsNumber()
+  @IsPositive()
+  @ToNumber()
   limit?: number;
 
   @ApiProperty({ required: false })

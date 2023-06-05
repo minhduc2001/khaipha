@@ -1,9 +1,10 @@
 export interface IUserGetByUniqueKey {
   username?: string;
   email?: string;
+  phone?: string;
 }
 
 export interface ICreateUser {
-  username: string;
+  phone: string;
   password: string;
 }

@@ -26,15 +26,13 @@ export class HistoriesService extends BaseService<Histories> {
   async listHistory(query: HistoriesDto) {
     const config: PaginateConfig<Histories> = {
       sortableColumns: ['id'],
+      relations: ['music'],
     };
 
     return this.listWithPage(query, config);
   }
 
   async addHistories(dto: AddHistoriesDto) {
-    const history = await this.getHistories(dto.musicId, dto.user.id);
-    if (history) return;
-
     const music = await this.musicService.getMusic(dto.musicId);
     return this.repository.save({
       user: dto.user,
@@ -53,8 +51,9 @@ export class HistoriesService extends BaseService<Histories> {
     return history;
   }
   async updateHistories(dto: UpdateHistoriesDto) {
-    const history = await this.getHistories(dto.musicId, dto.userId);
-    if (!history) throw new exc.BadException({ message: 'lich su chua co' });
+    const history = await this.getHistories(dto.musicId, dto.user.id);
+    if (!history)
+      return this.addHistories({ user: dto.user, musicId: dto.musicId });
     history.duration = dto.duration;
     history.position = dto.position;
     await history.save();

@@ -9,5 +9,6 @@ import { MusicModule } from '@/music/music.module';
   imports: [TypeOrmModule.forFeature([Histories]), MusicModule],
   providers: [HistoriesService],
   controllers: [HistoriesController],
+  exports: [HistoriesService],
 })
 export class HistoriesModule {}

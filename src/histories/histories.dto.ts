@@ -23,9 +23,8 @@ export class UpdateHistoriesDto {
   musicId: number;
 
   @ApiHideProperty()
-  @IsNumber()
   @IsOptional()
-  userId: number;
+  user: User;
 
   @ApiProperty()
   @IsNumber()

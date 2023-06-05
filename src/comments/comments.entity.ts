@@ -16,4 +16,7 @@ export class Comments extends AbstractEntity {
 
   @Column()
   content: string;
+
+  @Column({ nullable: true })
+  star: number;
 }

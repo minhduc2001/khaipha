@@ -3,8 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 
 import * as exc from '@base/api/exception.reslover';
 import { UserService } from '@/user/user.service';
-import { LoginDto, RegisterDto } from './dtos/auth.dto';
-import { IJWTPayload } from './interfaces/auth.interface';
+import { CheckPhoneDto, LoginDto, RegisterDto } from './dtos/auth.dto';
+import { IJWTPayload, ITokens } from './interfaces/auth.interface';
+import { config } from '@/config';
 
 @Injectable()
 export class AuthService {
@@ -23,11 +24,11 @@ export class AuthService {
   }
 
   async login(dto: LoginDto): Promise<any> {
-    const { username, password } = dto;
-    const user = await this.userService.getUserByUniqueKey({ username });
+    const { phone, password } = dto;
+    const user = await this.userService.getUserByUniqueKey({ phone });
     if (!user || !user.comparePassword(password))
       throw new exc.BadRequest({
-        message: 'username or password does not exists',
+        message: 'phone or password does not exists',
       });
     const payload: IJWTPayload = {
       sub: user.id,
@@ -41,17 +42,34 @@ export class AuthService {
   }
 
   async register(dto: RegisterDto) {
-    let isExists = await this.userService.getUserByUniqueKey({
-      email: dto.email,
-    });
-    if (isExists) throw new exc.BadRequest({ message: 'email already is use' });
-
-    isExists = await this.userService.getUserByUniqueKey({
-      username: dto.username,
+    const isExists = await this.userService.getUserByUniqueKey({
+      phone: dto.phone,
     });
 
-    if (isExists)
-      throw new exc.BadRequest({ message: 'username already is use' });
-    return this.userService.createUser(dto);
+    if (isExists) throw new exc.BadRequest({ message: 'phone already is use' });
+    const user = await this.userService.createUser({
+      phone: dto.phone,
+      password: dto.password,
+    });
+    const tokens: ITokens = await this.getTokens({ sub: user.id });
+    return { accessToken: tokens.accessToken };
+  }
+
+  async getTokens(payload: IJWTPayload) {
+    console.log(payload, 'payload');
+    const accessToken = this.jwtService.sign(payload);
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: config.JWT_RT_SECRET,
+      expiresIn: '7d',
+    });
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  }
+
+  async checkPhoneExist(dto: CheckPhoneDto) {
+    return this.userService.checkPhoneNumberExists(dto.phone);
   }
 }

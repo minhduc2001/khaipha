@@ -9,9 +9,9 @@ export class Authors extends AbstractEntity {
   @Column()
   birthday: Date;
 
-  @Column()
+  @Column({ nullable: true })
   image: string;
 
-  @Column()
+  @Column({ nullable: true })
   description: string;
 }

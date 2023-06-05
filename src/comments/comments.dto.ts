@@ -1,6 +1,9 @@
 import { ApiHideProperty, ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { ListDto } from '@shared/dtos/common.dto';
+import { ToNumber } from '@base/decorators/common.decorator';
 
+export class CommentsDto extends ListDto {}
 export class AddCommentDto {
   @ApiProperty()
   @IsNumber()
@@ -9,13 +12,19 @@ export class AddCommentDto {
 
   @ApiHideProperty()
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   userId: number;
 
   @ApiProperty()
   @IsString()
   @IsNotEmpty()
   content: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsNotEmpty()
+  @ToNumber()
+  star: number;
 }
 
 export class UpdateCommentDto {
@@ -35,4 +44,9 @@ export class UpdateCommentDto {
   @ApiProperty()
   @IsNotEmpty()
   content: string;
+
+  @ApiProperty()
+  @IsNumber()
+  @IsOptional()
+  star: number;
 }

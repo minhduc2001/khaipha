@@ -22,6 +22,7 @@ async function bootstrap() {
   const logger = loggerService.getLogger();
 
   app.use(`/uploads`, express.static('uploads'));
+  app.use(`/audio`, express.static('python/Data'));
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(morgan('dev'));
 

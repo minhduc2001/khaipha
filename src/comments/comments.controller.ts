@@ -2,16 +2,18 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { BulkIdsDto, ParamIdDto } from '@shared/dtos/common.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@/auth/guard/jwt-auth.guard';
 import { CommentService } from './comments.service';
-import { AddCommentDto, UpdateCommentDto } from './comments.dto';
+import { AddCommentDto, CommentsDto, UpdateCommentDto } from './comments.dto';
 import { GetUser } from '@/auth/decorator/get-user.decorator';
 import { User } from '@/user/entities/user.entity';
 
@@ -21,6 +23,11 @@ import { User } from '@/user/entities/user.entity';
 @UseGuards(JwtAuthGuard)
 export class CommentsController {
   constructor(private readonly service: CommentService) {}
+
+  @Get()
+  async list(@Query() query: CommentsDto) {
+    return this.service.list(query);
+  }
 
   @Post()
   async add(@Body() dto: AddCommentDto, @GetUser() user: User) {

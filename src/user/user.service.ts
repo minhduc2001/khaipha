@@ -48,9 +48,16 @@ export class UserService extends BaseService<User> {
   }
 
   async createUser(data: ICreateUser) {
-    const user: User = this.repository.create(data);
-    user.setPassword(data.password);
-    await user.save();
+    try {
+      const user: User = this.repository.create(data);
+      user.setPassword(data.password);
+      await user.save();
+
+      return user;
+    } catch (e) {
+      this.logger.warn(e);
+      throw new exc.BadException({ message: e.message });
+    }
   }
 
   async getAllUser(query: ListUserDto) {
@@ -64,5 +71,23 @@ export class UserService extends BaseService<User> {
 
   async uploadAvatar(dto: UploadAvatarDto) {
     console.log(dto);
+  }
+
+  async checkPhoneNumberExists(phone: string) {
+    try {
+      const isExist = await this.getUserByUniqueKey({ phone: phone });
+      if (isExist)
+        throw new exc.BadRequest({
+          message: 'Số điện thoại đã tồn tại',
+          errorCode: 'PHONE_EXIST',
+        });
+      return;
+    } catch (e) {
+      // this.logger.warn(e);
+      throw new exc.BadRequest({
+        message: e.message,
+        errorCode: e.response.errorCode,
+      });
+    }
   }
 }

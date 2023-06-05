@@ -38,4 +38,4 @@ lerna-debug.log*
 
 # other
 .env
-
+/python/Data
