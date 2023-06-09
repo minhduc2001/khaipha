@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToMany } from 'typeorm';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcrypt';
 import { ERole } from '@/role/enum/roles.enum';
@@ -6,6 +6,7 @@ import { AbstractEntity } from '@/base/service/abstract-entity.service';
 import { Permission } from '@/role/entities/permission.entity';
 import { JoinTable } from 'typeorm';
 import { EState } from '@shared/enum/common.enum';
+import { Histories } from '@/histories/histories.entity';
 
 @Entity()
 export class User extends AbstractEntity {
@@ -34,6 +35,9 @@ export class User extends AbstractEntity {
 
   @Column({ type: 'enum', enum: EState, default: EState.Active })
   state: EState;
+
+  @OneToMany(() => Histories, (history) => history.user)
+  histories: Histories[];
 
   setPassword(password: string) {
     this.password = bcrypt.hashSync(password, 10);

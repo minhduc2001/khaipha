@@ -6,6 +6,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import {
   AddHistoriesDto,
   HistoriesDto,
+  HistoriesHomeDto,
   UpdateHistoriesDto,
 } from '@/histories/histories.dto';
 import { PaginateConfig } from '@base/service/paginate/paginate';
@@ -28,6 +29,21 @@ export class HistoriesService extends BaseService<Histories> {
       sortableColumns: ['id'],
       relations: ['music'],
     };
+
+    return this.listWithPage(query, config);
+  }
+
+  async listHome(query: HistoriesHomeDto) {
+    const config: PaginateConfig<Histories> = {
+      sortableColumns: ['id'],
+      relations: ['music'],
+      where: { user: { id: query.userId } },
+    };
+
+    // const queryB = this.repository
+    //   .createQueryBuilder('music')
+    //   .where({ user: { id: query.userId } });
+    delete query.userId;
 
     return this.listWithPage(query, config);
   }

@@ -11,7 +11,7 @@ import { Music } from '@/music/music.entity';
 
 @Entity()
 export class Histories extends AbstractEntity {
-  @ManyToOne(() => User, (user) => user)
+  @ManyToOne(() => User, (user) => user.histories)
   @JoinColumn()
   user: User;
 

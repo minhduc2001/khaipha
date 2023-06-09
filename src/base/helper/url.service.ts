@@ -12,6 +12,6 @@ export class UrlService {
   }
 
   dataUrl(filename: string): string {
-    return `http://${config.IP}:${config.PORT}/api/v${config.API_VERSION}/audio/${filename}`;
+    return `http://${config.IP}:${config.PORT}/audio/${filename}`;
   }
 }

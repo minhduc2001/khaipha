@@ -25,6 +25,12 @@ async function bootstrap() {
   app.use(`/audio`, express.static('python/Data'));
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(morgan('dev'));
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
+  });
 
   app.useGlobalInterceptors(new ResponseTransformInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter(loggerService));

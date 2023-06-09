@@ -26,6 +26,7 @@ export class HomeService extends BaseService<Home> {
   }
 
   async getHome(query: HomeDto) {
+    console.log(query);
     const config: PaginateConfig<Home> = {
       sortableColumns: ['id'],
     };
@@ -33,12 +34,26 @@ export class HomeService extends BaseService<Home> {
     const data = [];
     for (const value of home.results) {
       if (value.ref == 'histories') {
-        const resp = await this.historiesService.listHistory({
-          filter: { ['user.(id)']: query.user.id.toString() },
+        const resp = await this.historiesService.listHome({
+          userId: query.user.id,
           limit: 10,
         });
+        const d = {
+          ...value,
+          list: resp.results,
+        };
+        data.push(d);
+      }
 
-        data.push(resp.results);
+      if (value.ref == 'authors') {
+        const resp = await this.authorsService.getAllAuthors({
+          limit: 10,
+        });
+        const d = {
+          ...value,
+          list: resp.results,
+        };
+        data.push(d);
       }
     }
     home.results = data;

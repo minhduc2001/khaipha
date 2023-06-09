@@ -35,6 +35,7 @@ export class ConfigService {
   // file
   MAX_FILE_SIZE = 10000000; // 10MB;
   UPLOAD_LOCATION = 'uploads';
+  UPLOAD_LOCATION_AUDIO = 'python/Data/unlabeled';
 }
 
 export const config = new ConfigService();

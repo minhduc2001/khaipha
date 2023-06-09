@@ -7,6 +7,7 @@ import { makeUUID } from '@base/helper/function.helper';
 
 export const multerConfig = {
   dest: config.UPLOAD_LOCATION,
+  audio: config.UPLOAD_LOCATION_AUDIO,
 };
 
 // Multer upload options
@@ -19,7 +20,8 @@ export const multerOptions = {
   fileFilter: (req: any, file: any, cb: any) => {
     if (
       file.mimetype.match(/\/(jpg|jpeg|png|gif)$/) ||
-      file.mimetype.match(/\.xlsx$/i)
+      file.mimetype.match(/\.xlsx$/i) ||
+      file.mimetype.match(/audio/)
     ) {
       // Allow storage of file
       cb(null, true);
@@ -37,7 +39,15 @@ export const multerOptions = {
   storage: diskStorage({
     // Destination storage path details
     destination: (req: any, file: any, cb: any) => {
-      const uploadPath = multerConfig.dest;
+      let uploadPath = '';
+      if (file.mimetype.match(/\/(jpg|jpeg|png|gif)$/)) {
+        uploadPath = multerConfig.dest;
+      } else if (file.mimetype.match(/audio/)) {
+        uploadPath = multerConfig.audio;
+      } else {
+        // Handle other file types if needed
+        uploadPath = 'other/directory';
+      }
       // Create folder if doesn't exist
       if (!existsSync(uploadPath)) {
         mkdirSync(uploadPath);

@@ -5,6 +5,10 @@ import { User } from '@/user/entities/user.entity';
 
 export class HistoriesDto extends ListDto {}
 
+export class HistoriesHomeDto extends ListDto {
+  userId: number;
+}
+
 export class AddHistoriesDto {
   @ApiProperty()
   @IsNumber()

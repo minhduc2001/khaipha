@@ -36,12 +36,12 @@ if __name__ == '__main__':
                   'MLmodels/pca_21.pkl',
                   'MLmodels/knn1.joblib')
     # LƯU Ý: cần truyền vào đường dẫn chính xác của file wav
-    result = km.predict_wav_file('Data/unlabeled/newSong00000.mp3')
+    result = km.predict_wav_file('Data/unlabeled/hhhclassical.00005.wav')
     print('Data/unlabeled/newSong00000.mp3 is predicted as ', result)
-    result = km.predict_wav_file('Data/unlabeled/newSong00001.mp3')
-    print('Data/unlabeled/newSong00001.mp3 is predicted as ', result)
-    result = km.predict_wav_file('Data/unlabeled/newSong00002.mp3')
-    print('Data/unlabeled/newSong00002.mp3 is predicted as ', result)
+#     result = km.predict_wav_file('Data/unlabeled/newSong00001.mp3')
+#     print('Data/unlabeled/newSong00001.mp3 is predicted as ', result)
+#     result = km.predict_wav_file('Data/unlabeled/newSong00002.mp3')
+#     print('Data/unlabeled/newSong00002.mp3 is predicted as ', result)
 
     # 3. Khi xóa 1 file bài hát, ngoài viêc xóa file wav (hoặc mp3) thì nhóc còn phải gọi
     # tới hàm sau để t xóa thông tin bài hát khỏi model nhé

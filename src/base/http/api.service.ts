@@ -17,7 +17,9 @@ export class ApiService {
 
   async getAxios(url) {
     try {
-      return await axios.get(url);
+      return await axios.get(url, {
+        timeout: 20000,
+      });
     } catch (e) {
       throw new exc.BadException({ message: 'null' });
     }
