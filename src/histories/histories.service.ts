@@ -13,6 +13,7 @@ import { PaginateConfig } from '@base/service/paginate/paginate';
 
 import * as exc from '@base/api/exception.reslover';
 import { MusicService } from '@/music/music.service';
+import { UrlService } from '@base/helper/url.service';
 
 @Injectable()
 export class HistoriesService extends BaseService<Histories> {
@@ -20,8 +21,18 @@ export class HistoriesService extends BaseService<Histories> {
     @InjectRepository(Histories)
     protected readonly repository: Repository<Histories>,
     private readonly musicService: MusicService,
+    private readonly urlService: UrlService,
   ) {
     super(repository);
+  }
+
+  async preResponse(histories: Histories[]) {
+    for (const history of histories) {
+      if (history?.music?.url)
+        history.music.url = this.urlService.dataUrl(history.music.url);
+      if (history?.music?.image)
+        history.music.image = this.urlService.uploadUrl(history.music.image);
+    }
   }
 
   async listHistory(query: HistoriesDto) {
@@ -30,12 +41,15 @@ export class HistoriesService extends BaseService<Histories> {
       relations: ['music'],
     };
 
-    return this.listWithPage(query, config);
+    const data = await this.listWithPage(query, config);
+    await this.preResponse(data.results);
+    return data;
   }
 
   async listHome(query: HistoriesHomeDto) {
     const config: PaginateConfig<Histories> = {
       sortableColumns: ['id'],
+      defaultSortBy: [['updatedAt', 'DESC']],
       relations: ['music'],
       where: { user: { id: query.userId } },
     };
@@ -45,7 +59,9 @@ export class HistoriesService extends BaseService<Histories> {
     //   .where({ user: { id: query.userId } });
     delete query.userId;
 
-    return this.listWithPage(query, config);
+    const data = await this.listWithPage(query, config);
+    await this.preResponse(data.results);
+    return data;
   }
 
   async addHistories(dto: AddHistoriesDto) {

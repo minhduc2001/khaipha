@@ -8,6 +8,7 @@ import { AddMusicDto, MusicDto } from '@/music/music.dto';
 import { PaginateConfig } from '@base/service/paginate/paginate';
 import { ApiService } from '@base/http/api.service';
 import { UrlService } from '@base/helper/url.service';
+import { Histories } from '@/histories/histories.entity';
 @Injectable()
 export class MusicService extends BaseService<Music> {
   constructor(
@@ -22,6 +23,7 @@ export class MusicService extends BaseService<Music> {
   async preResponse(musics: Music[]) {
     for (const music of musics) {
       if (music.url) music.url = this.urlService.dataUrl(music.url);
+      if (music?.image) music.image = this.urlService.uploadUrl(music.image);
     }
   }
 
@@ -51,6 +53,19 @@ export class MusicService extends BaseService<Music> {
       duration: dto.duration,
     });
     return true;
+  }
+
+  async listMusicRamdom(genre: string) {
+    const data = await this.repository
+      .createQueryBuilder('music')
+      .select()
+      .where({ genre: genre })
+      .orderBy('RANDOM()')
+      .limit(5)
+      .getMany();
+
+    await this.preResponse(data);
+    return data;
   }
 
   async getMusic(id: number) {

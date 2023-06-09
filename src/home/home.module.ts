@@ -7,6 +7,7 @@ import { MusicModule } from '@/music/music.module';
 import { HistoriesModule } from '@/histories/histories.module';
 import { AuthorsModule } from '@/authors/authors.module';
 import { UserModule } from '@/user/user.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { UserModule } from '@/user/user.module';
     HistoriesModule,
     AuthorsModule,
     UserModule,
+    ScheduleModule.forRoot(),
   ],
   providers: [HomeService],
   controllers: [HomeController],

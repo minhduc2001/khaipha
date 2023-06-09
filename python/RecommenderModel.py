@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-
+# -- coding: utf-8
 from sklearn.metrics.pairwise import cosine_similarity, euclidean_distances
 from sklearn import preprocessing
 import pandas as pd

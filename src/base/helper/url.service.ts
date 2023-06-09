@@ -8,7 +8,7 @@ export class UrlService {
   private logger = this.loggerService.getLogger(UrlService.name);
 
   uploadUrl(filename: string): string {
-    return `http://${config.IP}:${config.PORT}/api/v${config.API_VERSION}/uploads/${filename}`;
+    return `http://${config.IP}:${config.PORT}/uploads/${filename}`;
   }
 
   dataUrl(filename: string): string {

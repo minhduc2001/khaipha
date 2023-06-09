@@ -14,13 +14,18 @@ import { JwtAuthGuard } from '@/auth/guard/jwt-auth.guard';
 export class HomeController {
   constructor(private readonly service: HomeService) {}
 
-  @Get(':id')
-  async recommend(@Param() param: ParamIdDto) {
-    return this.service.handleRecommendByMusic(param.id);
-  }
-
   @Get()
   async home(@Query() query: HomeDto, @GetUser() user: User) {
     return this.service.getHome({ ...query, user: user });
+  }
+
+  @Get('test')
+  async test(@GetUser() user: User) {
+    return this.service.handleRecommendByUser(user.id);
+  }
+
+  @Get(':id')
+  async recommend(@Param() param: ParamIdDto) {
+    return this.service.handleRecommendByMusic(param.id);
   }
 }

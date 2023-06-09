@@ -11,6 +11,7 @@ import { HomeDto } from '@/home/home.dto';
 import { ApiService } from '@base/http/api.service';
 import { UserService } from '@/user/user.service';
 import { createArrayCsvWriter } from 'csv-writer';
+import { Cron, CronExpression } from '@nestjs/schedule';
 @Injectable()
 export class HomeService extends BaseService<Home> {
   constructor(
@@ -30,7 +31,6 @@ export class HomeService extends BaseService<Home> {
   // }
 
   async getHome(query: HomeDto) {
-    console.log(query);
     const config: PaginateConfig<Home> = {
       sortableColumns: ['id'],
     };
@@ -59,9 +59,33 @@ export class HomeService extends BaseService<Home> {
         };
         data.push(d);
       }
+
+      if (value.ref == 'music') {
+        const resp = await this.handleRecommendByUser(query.user.id);
+        const d = {
+          ...value,
+          list: resp,
+        };
+        data.push(d);
+      }
     }
     home.results = data;
     return home;
+  }
+
+  async handleRecommendByUser(userId: number) {
+    const url = `http://localhost:5000/recommendGenresByUserId?userId=${userId}&n=2`;
+    const { data } = await this.apiService.getAxios(url);
+    const fieldName = Object.keys(data.data).map(
+      (key, index) => data.data[key],
+    );
+
+    const resp = [];
+    for (const field of fieldName) {
+      const r = await this.musicService.listMusicRamdom(field);
+      resp.push(r);
+    }
+    return resp;
   }
 
   async handleRecommendByMusic(id: number) {
@@ -82,6 +106,7 @@ export class HomeService extends BaseService<Home> {
     return await Promise.all(promises);
   }
 
+  @Cron(CronExpression.EVERY_DAY_AT_1AM)
   async stat() {
     const genres = [
       'blues',
@@ -114,7 +139,8 @@ export class HomeService extends BaseService<Home> {
     });
 
     csvWriter.writeRecords(data).then(() => {
-      console.log('...Done');
+      const url = `http://localhost:5000/trainUserKmeans`;
+      this.apiService.getAxios(url);
     });
   }
 }
