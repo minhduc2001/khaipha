@@ -100,14 +100,20 @@ export class MusicSeed {
 
   async handleSeed(data) {
     for (const d of data) {
-      const author = await this.authorsRepository.save({
-        name: d.authors,
-        birthday: new Date(),
+      let author = await this.authorsRepository.findOne({
+        where: { name: d.authors },
       });
+
+      if (!author) {
+        author = await this.authorsRepository.save({
+          name: d.authors,
+          birthday: new Date(),
+        });
+      }
 
       await this.repository.save({
         ...d,
-        authors: author,
+        authors: [author],
       });
     }
   }

@@ -75,4 +75,13 @@ export class HistoriesService extends BaseService<Histories> {
     await history.save();
     return true;
   }
+
+  async count(userId: number, genre: string) {
+    return await this.repository.count({
+      where: {
+        user: { id: userId },
+        music: { genre: genre },
+      },
+    });
+  }
 }

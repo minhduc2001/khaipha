@@ -6,6 +6,7 @@ import { Home } from '@/home/home.entity';
 import { MusicModule } from '@/music/music.module';
 import { HistoriesModule } from '@/histories/histories.module';
 import { AuthorsModule } from '@/authors/authors.module';
+import { UserModule } from '@/user/user.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { AuthorsModule } from '@/authors/authors.module';
     MusicModule,
     HistoriesModule,
     AuthorsModule,
+    UserModule,
   ],
   providers: [HomeService],
   controllers: [HomeController],

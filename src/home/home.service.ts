@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { BaseService } from '@base/service/base.service';
 import { Home } from '@/home/home.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -9,9 +9,8 @@ import { MusicService } from '@/music/music.service';
 import { AuthorsService } from '@/authors/authors.service';
 import { HomeDto } from '@/home/home.dto';
 import { ApiService } from '@base/http/api.service';
-import { Recommend } from '@/home/home.interface';
-import { map } from 'rxjs/operators';
-
+import { UserService } from '@/user/user.service';
+import { createArrayCsvWriter } from 'csv-writer';
 @Injectable()
 export class HomeService extends BaseService<Home> {
   constructor(
@@ -20,10 +19,15 @@ export class HomeService extends BaseService<Home> {
     private readonly historiesService: HistoriesService,
     private readonly musicService: MusicService,
     private readonly authorsService: AuthorsService,
+    private readonly userService: UserService,
     private readonly apiService: ApiService,
   ) {
     super(repository);
   }
+
+  // async onModuleInit() {
+  //   await this.stat();
+  // }
 
   async getHome(query: HomeDto) {
     console.log(query);
@@ -76,5 +80,41 @@ export class HomeService extends BaseService<Home> {
     });
 
     return await Promise.all(promises);
+  }
+
+  async stat() {
+    const genres = [
+      'blues',
+      'classical',
+      'country',
+      'disco',
+      'hiphop',
+      'jazz',
+      'metal',
+      'pop',
+      'reggae',
+      'rock',
+    ];
+
+    const users = await this.userService.getAllUserWithoutPaging();
+
+    const data = [];
+    for (const user of users) {
+      const d = [user.id];
+      for (const genre of genres) {
+        const count = await this.historiesService.count(user.id, genre);
+        d.push(count);
+      }
+      data.push(d);
+    }
+
+    const csvWriter = createArrayCsvWriter({
+      header: ['ID', ...genres],
+      path: 'file.csv',
+    });
+
+    csvWriter.writeRecords(data).then(() => {
+      console.log('...Done');
+    });
   }
 }

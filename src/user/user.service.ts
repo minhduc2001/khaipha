@@ -69,6 +69,10 @@ export class UserService extends BaseService<User> {
     return this.listWithPage(query, config);
   }
 
+  async getAllUserWithoutPaging() {
+    return this.repository.find();
+  }
+
   async uploadAvatar(dto: UploadAvatarDto) {
     console.log(dto);
   }
