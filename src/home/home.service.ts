@@ -83,7 +83,7 @@ export class HomeService extends BaseService<Home> {
     const resp = [];
     for (const field of fieldName) {
       const r = await this.musicService.listMusicRamdom(field);
-      resp.push(r);
+      resp.push(...r);
     }
     return resp;
   }
