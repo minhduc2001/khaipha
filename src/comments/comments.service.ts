@@ -24,8 +24,8 @@ export class CommentService extends BaseService<Comments> {
   async list(query: CommentsDto) {
     const config: PaginateConfig<Comments> = {
       sortableColumns: ['createdAt'],
+      defaultSortBy: [['createdAt', 'DESC']],
       relations: ['user'],
-      select: ['user.(avatar)'],
     };
     return this.listWithPage(query, config);
   }
@@ -39,13 +39,12 @@ export class CommentService extends BaseService<Comments> {
   async addComment(dto: AddCommentDto) {
     const user = await this.userService.getUserById(dto.userId);
     const music = await this.musicService.getMusic(dto.musicId);
-    await this.repository.save({
+    return await this.repository.save({
       user: user,
       music: music,
       content: dto.content,
       star: dto.star,
     });
-    return true;
   }
 
   async updateComment(dto: UpdateCommentDto) {
