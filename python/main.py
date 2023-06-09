@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # This is a sample Python script.
 from KnnModel import KnnModel
 from RecommenderModel import RecommenderModel
