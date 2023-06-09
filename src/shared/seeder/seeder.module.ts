@@ -8,9 +8,11 @@ import { PermissionSeed } from '@shared/seeder/permission.seed';
 import { MusicSeed } from '@shared/seeder/music.seed';
 import { Music } from '@/music/music.entity';
 import { Authors } from '@/authors/authors.entity';
+import { Home } from '@/home/home.entity';
+import { HomeSeed } from '@shared/seeder/home.seed';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Permission, Music, Authors])],
-  providers: [SeederService, UserSeed, PermissionSeed, MusicSeed],
+  imports: [TypeOrmModule.forFeature([User, Permission, Music, Authors, Home])],
+  providers: [SeederService, UserSeed, PermissionSeed, MusicSeed, HomeSeed],
 })
 export class SeedersModule {}
