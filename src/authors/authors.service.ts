@@ -54,12 +54,7 @@ export class AuthorsService extends BaseService<Authors> {
     const author = await this.getAuthorById(dto.id);
     if (!author)
       throw new exc.BadException({ message: 'khong ton tai tac gia nay' });
-    author.name = dto.name ?? author.name;
-    author.birthday = dto.birthday ?? author.birthday;
-    author.image = dto.image ?? author.image;
-    author.description = dto.description ?? author.description;
-
-    await author.save();
+    await this.repository.update(dto.id, dto);
     return true;
   }
 

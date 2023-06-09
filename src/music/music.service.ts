@@ -56,14 +56,14 @@ export class MusicService extends BaseService<Music> {
   }
 
   async listMusicRamdom(genre: string) {
-    const data = await this.repository
-      .createQueryBuilder('music')
-      .select()
-      .where({ genre: genre })
-      .orderBy('RANDOM()')
-      .limit(5)
-      .getMany();
+    const query = this.repository.createQueryBuilder('music').select();
 
+    if (genre != null) {
+      query.where({ genre: genre });
+    }
+
+    query.orderBy('RANDOM()').limit(5);
+    const data = await query.getMany();
     await this.preResponse(data);
     return data;
   }

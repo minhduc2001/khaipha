@@ -26,6 +26,9 @@ export class HomeController {
 
   @Get(':id')
   async recommend(@Param() param: ParamIdDto) {
-    return this.service.handleRecommendByMusic(param.id);
+    return {
+      results: await this.service.handleRecommendByMusic(param.id),
+      metadata: {},
+    };
   }
 }

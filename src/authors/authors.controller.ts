@@ -56,7 +56,7 @@ export class AuthorsController {
     return this.service.updateAuthors({
       ...param,
       ...dto,
-      ...image,
+      image: image.filename,
     });
   }
 
