@@ -65,7 +65,7 @@ export interface PaginateConfig<T> {
   origin?: string;
 }
 
-export const DEFAULT_MAX_LIMIT = 100;
+export const DEFAULT_MAX_LIMIT = 10000;
 export const DEFAULT_LIMIT = 20;
 export const NO_PAGINATION = 0;
 

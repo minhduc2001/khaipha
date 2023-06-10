@@ -8,6 +8,7 @@ import {
   Put,
   Query,
   UploadedFile,
+  UploadedFiles,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,7 +18,11 @@ import { JwtAuthGuard } from '@/auth/guard/jwt-auth.guard';
 import { AddMusicDto, MusicDto, UpdateMusicDto } from '@/music/music.dto';
 import { BulkIdsDto, ParamIdDto } from '@shared/dtos/common.dto';
 import { Public } from '@/auth/decorator/public.decorator';
-import { FileInterceptor } from '@nestjs/platform-express';
+import {
+  FileFieldsInterceptor,
+  FileInterceptor,
+  FilesInterceptor,
+} from '@nestjs/platform-express';
 
 @Controller('music')
 @ApiTags('Musics')
@@ -40,17 +45,45 @@ export class MusicController {
   @Post()
   @Public()
   @ApiConsumes('multipart/form-data')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'audio', maxCount: 1 },
+      { name: 'image', maxCount: 1 },
+    ]),
+  )
   async addMusic(
     @Body() dto: AddMusicDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFiles()
+    files: { image?: Express.Multer.File; audio?: Express.Multer.File },
   ) {
-    return this.service.addMusic({ ...dto, file: file.filename });
+    return this.service.addMusic({
+      ...dto,
+      audio: files.audio[0].filename,
+      image: files.image[0].filename,
+    });
   }
 
   @Put(':id')
-  async updateMusic(@Param() param: ParamIdDto, @Body() dto: UpdateMusicDto) {
-    return;
+  @ApiConsumes('multipart/form-data')
+  @UseInterceptors(
+    FileFieldsInterceptor([
+      { name: 'audio', maxCount: 1 },
+      { name: 'image', maxCount: 1 },
+    ]),
+  )
+  async updateMusic(
+    @Param() param: ParamIdDto,
+    @Body() dto: UpdateMusicDto,
+    @UploadedFiles()
+    files: { image?: Express.Multer.File; audio?: Express.Multer.File },
+  ) {
+    delete dto.authors;
+    return this.service.updateMusic({
+      ...param,
+      ...dto,
+      audio: files?.audio?.[0]?.filename,
+      image: files?.image?.[0]?.filename,
+    });
   }
 
   @Delete()

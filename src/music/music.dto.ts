@@ -1,5 +1,5 @@
 import { ListDto } from '@shared/dtos/common.dto';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiHideProperty, ApiProperty, PickType } from '@nestjs/swagger';
 import { IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { ToNumber, Trim } from '@base/decorators/common.decorator';
 
@@ -12,7 +12,15 @@ export class UploadMusicDto {
     description: 'File to upload',
   })
   @IsOptional()
-  file: string;
+  image: string;
+
+  @ApiProperty({
+    type: 'string',
+    format: 'binary',
+    description: 'File to upload',
+  })
+  @IsOptional()
+  audio: string;
 }
 
 export class AddMusicDto extends UploadMusicDto {
@@ -44,6 +52,36 @@ export class AddMusicDto extends UploadMusicDto {
   @IsString()
   @Trim()
   album: string;
+
+  @ApiProperty()
+  @IsString()
+  @IsOptional()
+  @Trim()
+  authors: string;
+  //
+  // @ApiHideProperty()
+  // @IsOptional()
+  // audio: string;
 }
 
-export class UpdateMusicDto {}
+export class UpdateMusicDto extends PickType(AddMusicDto, [
+  'authors',
+  'album',
+  'artist',
+  'audio',
+  'image',
+  'releaseDate',
+  'duration',
+]) {
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  @Trim()
+  title: string;
+
+  @ApiHideProperty()
+  @IsOptional()
+  @IsPositive()
+  @ToNumber()
+  id: number;
+}

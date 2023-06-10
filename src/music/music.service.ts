@@ -4,7 +4,7 @@ import { Music } from '@/music/music.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as exc from '@base/api/exception.reslover';
-import { AddMusicDto, MusicDto } from '@/music/music.dto';
+import { AddMusicDto, MusicDto, UpdateMusicDto } from '@/music/music.dto';
 import { PaginateConfig } from '@base/service/paginate/paginate';
 import { ApiService } from '@base/http/api.service';
 import { UrlService } from '@base/helper/url.service';
@@ -30,6 +30,7 @@ export class MusicService extends BaseService<Music> {
   async listMusic(query: MusicDto) {
     const config: PaginateConfig<Music> = {
       sortableColumns: ['id'],
+      defaultSortBy: [['updatedAt', 'DESC']],
       relations: ['authors'],
     };
 
@@ -39,20 +40,51 @@ export class MusicService extends BaseService<Music> {
   }
 
   async addMusic(dto: AddMusicDto) {
-    const callUrl = `http://localhost:5000/predict?songName=${dto.file}`;
-    const res = await this.apiService.getAxios(callUrl);
-    const genre = res.data.label;
+    try {
+      const callUrl = `http://localhost:5000/predict?songName=${dto.audio}`;
+      const res = await this.apiService.getAxios(callUrl);
+      const genre = res.data.label;
 
-    const music = await this.repository.save({
-      genre: genre,
-      releaseDate: dto.releaseDate,
-      artist: dto.artist,
-      url: 'unlabeled/' + dto.file,
-      album: dto.album,
-      title: dto.title,
-      duration: dto.duration,
-    });
-    return true;
+      const music = await this.repository.save({
+        genre: genre,
+        releaseDate: dto.releaseDate,
+        artist: dto.artist,
+        url: 'unlabeled/' + dto.audio,
+        album: dto.album,
+        title: dto.title,
+        duration: dto.duration,
+        image: dto.image,
+      });
+
+      // console.log(music);
+      return music;
+    } catch (e) {
+      throw new exc.BadRequest({ message: e.message });
+    }
+  }
+
+  async updateMusic(dto: UpdateMusicDto) {
+    try {
+      let genre = null;
+      if (dto.audio) {
+        const callUrl = `http://localhost:5000/predict?songName=${dto.audio}`;
+        const res = await this.apiService.getAxios(callUrl);
+        genre = res.data.label;
+      }
+      const music = await this.getMusicWithoutImage(dto.id);
+      return this.repository.update(dto.id, {
+        genre: genre ?? music.genre,
+        releaseDate: dto.releaseDate,
+        artist: dto.artist,
+        url: dto.audio ? 'unlabeled/' + dto.audio : music.url,
+        album: dto.album,
+        title: dto.title,
+        duration: dto.duration,
+        image: dto.image ?? music.image,
+      });
+    } catch (e) {
+      throw new exc.BadRequest({ message: e.message });
+    }
   }
 
   async listMusicRamdom(genre: string) {
@@ -69,7 +101,19 @@ export class MusicService extends BaseService<Music> {
   }
 
   async getMusic(id: number) {
-    const music = await this.repository.findOne({ where: { id: id } });
+    const music = await this.repository.findOne({
+      where: { id: id },
+      relations: { authors: true },
+    });
+    if (!music) throw new exc.BadException({ message: 'ko co bai nay' });
+    await this.preResponse([music]);
+    return music;
+  }
+
+  async getMusicWithoutImage(id: number) {
+    const music = await this.repository.findOne({
+      where: { id: id },
+    });
     if (!music) throw new exc.BadException({ message: 'ko co bai nay' });
     return music;
   }

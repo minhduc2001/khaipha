@@ -23,7 +23,7 @@ def helloworld():
 
 @app.route("/predict", methods=["GET", "POST"])
 def predict():
-    if request.method == 'POST':
+    if request.method == 'GET':
         # file = request.files['file']
         # if file.filename.split('.')[-1] != 'wav' and file.filename.split('.')[-1] != 'mp3':
         #     data = {"error": "the song must be in mp3 or wav format"}
