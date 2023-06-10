@@ -126,7 +126,7 @@ export class MusicService extends BaseService<Music> {
   }
 
   async bulkDelete(ids: number[]) {
-    for (const id in ids) {
+    for (const id of ids) {
       await this.repository.delete(id);
     }
 
