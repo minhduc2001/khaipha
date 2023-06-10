@@ -93,7 +93,7 @@ export class HomeService extends BaseService<Home> {
   }
 
   async handleRecommendByMusic(id: number) {
-    const music = await this.musicService.getMusic(id);
+    const music = await this.musicService.getMusicWithoutImage(id);
     let tmp = music.url?.split('/')?.[2];
     if (!tmp) tmp = music.url;
     const url = `http://localhost:5000/recommend?songName=${tmp}&minN=5`;

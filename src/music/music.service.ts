@@ -122,6 +122,7 @@ export class MusicService extends BaseService<Music> {
   async getMusicByUrl(url: string) {
     const music = await this.repository.findOne({ where: { url: url } });
     if (!music) throw new exc.BadException({ message: 'ko co bai nay' });
+    await this.preResponse([music]);
     return music;
   }
 
