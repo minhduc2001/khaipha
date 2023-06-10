@@ -7,4 +7,5 @@ export interface IUserGetByUniqueKey {
 export interface ICreateUser {
   phone: string;
   password: string;
+  username: string;
 }

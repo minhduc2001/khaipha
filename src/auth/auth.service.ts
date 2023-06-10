@@ -50,6 +50,7 @@ export class AuthService {
     const user = await this.userService.createUser({
       phone: dto.phone,
       password: dto.password,
+      username: dto.username,
     });
     const tokens: ITokens = await this.getTokens({ sub: user.id });
     return { accessToken: tokens.accessToken };
