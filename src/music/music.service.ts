@@ -31,6 +31,7 @@ export class MusicService extends BaseService<Music> {
     const config: PaginateConfig<Music> = {
       sortableColumns: ['id'],
       defaultSortBy: [['updatedAt', 'DESC']],
+      searchableColumns: ['title'],
       relations: ['authors'],
     };
 
